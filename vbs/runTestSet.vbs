@@ -1,3 +1,5 @@
+
+
 ' To run: C:\Windows\SysWOW64\cscript.exe  .\runTestSet.vbs
 
 Set QCConnection = CreateObject("TDApiOle80.TDConnection")
@@ -41,6 +43,8 @@ Wscript.Echo theTestSet.ID
 
 Set Scheduler = theTestSet.StartExecution("")
 
+Scheduler.RunAllLocally = True
+
 Scheduler.Run
 ' Get the execution status object.
 Set execStatus = Scheduler.ExecutionStatus
@@ -53,11 +57,23 @@ While ((RunFinished = False) And (iter < 100))
     RunFinished = execStatus.Finished
     Set EventsList = execStatus.EventsList
 
+    For i = 1 To execStatus.Count
+        Set TestExecStatusObj = execStatus.Item(i)
+
+        WSCript.Echo "Iteration " & iter & " Status: " & TestExecStatusObj.Message & " " & TestExecStatusObj.Status
+
+
+    Next
+    'Sleep() has to be declared before it can be used.
+    'This is the module level declaration of Sleep():
+    'Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+    WSCript.Sleep 5000
 
 Wend 'Loop While execStatus.Finished = False
 
 
 WScript.Echo "Finished"
+
 
 
 
